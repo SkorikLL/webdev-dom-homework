@@ -1,71 +1,136 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Проект "Комменты"</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
 
-  <body>
-    <div class="container">
-      <ul class="comments">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button">Написать</button>
+<head>
+  <title>Проект "Комменты"</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <ul class="comments">
+      <li class="comment">
+        <div class="comment-header">
+          <div>Глеб Фокин</div>
+          <div>12.02.22 12:18</div>
         </div>
+        <div class="comment-body">
+          <div class="comment-text">
+            Это будет первый комментарий на этой странице
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">3</span>
+            <button class="like-button"></button>
+          </div>
+        </div>
+      </li>
+      <li class="comment">
+        <div class="comment-header">
+          <div>Варвара Н.</div>
+          <div>13.02.22 19:22</div>
+        </div>
+        <div class="comment-body">
+          <div class="comment-text">
+            Мне нравится как оформлена эта страница! ❤
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">75</span>
+            <button class="like-button -active-like"></button>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="add-form">
+      <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <div class="add-form-row">
+        <button class="add-form-button">Написать</button>
+        <button class="del-form-button">Удалить последний комментарий</button>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 
-  <script>
-    "use strict";
-    // Код писать здесь
-    console.log("It works!");
-  </script>
+<style>
+  .error {
+    background-color: red;
+  }
+</style>
+
+<script>
+  // Код писать здесь
+  console.log("It works!");
+
+  const nameInputElement = document.querySelector('.add-form-name'); // пользователь вводить свое имя
+  const commentInputElement = document.querySelector('.add-form-text');// пользователь вводить свой комментарий
+  const buttonElement = document.querySelector('.add-form-button'); //кнопка "Написать"
+  const listCommentsElements = document.querySelector('.comments');
+  const buttonDel = document.querySelector('.del-form-button'); //кнопка "Удалить последний комментарий"
+
+  const date = new Date();
+
+  //Добавить обработку клика кнопки "Написать"
+  buttonElement.addEventListener("click", () => {
+    const oldListHTML = listCommentsElements.innerHTML;
+    nameInputElement.classList.remove("error");
+    commentInputElement.classList.remove("error");
+
+
+    if (nameInputElement.value === "" & commentInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      commentInputElement.classList.add("error");
+      //buttonElement.setAttribute('disabled', '');
+      return;
+    } else if (nameInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      // buttonElement.setAttribute('disabled', '');
+      return;
+    } else if (commentInputElement.value === "") {
+      commentInputElement.classList.add("error");
+      //buttonElement.setAttribute('disabled', '');
+      return;
+    }
+    else {
+      listCommentsElements.innerHTML = oldListHTML +
+        `<li class="comment">
+        <div class="comment-header">
+          <div>${nameInputElement.value}</div>
+          <div>${date.getDate()}.${date.getMonth() + 1}.${date.toLocaleDateString("ru-RU", { year: '2-digit' })} ${date.getHours()}:${date.getMinutes()} </div>
+        </div>
+        <div class="comment-body">
+          <div class="comment-text">
+            ${commentInputElement.value}
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">0</span>
+            <button class="like-button"></button>
+          </div>
+        </div>
+      </li>`
+      nameInputElement.value = "";
+      commentInputElement.value = "";
+    }
+
+    if (commentInputElement.value != "" & nameInputElement.value != "") {
+      commentInputElement.classList.remove("error");
+      console.log("object");
+      return;
+    }
+  });
+
+  //Добавить обработку клика кнопки "Удалить последний комментарий"
+  buttonDel.addEventListener("click", () => {
+    const lastChildComment = listCommentsElements.lastElementChild;
+    lastChildComment.remove();
+  });
+
+</script>
+
 </html>
