@@ -10,44 +10,11 @@
 <body>
   <div class="container">
     <ul class="comments">
-      <li class="comment">
-        <div class="comment-header">
-          <div>Глеб Фокин</div>
-          <div>12.02.22 12:18</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Это будет первый комментарий на этой странице
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">3</span>
-            <button class="like-button"></button>
-          </div>
-        </div>
-      </li>
-      <li class="comment">
-        <div class="comment-header">
-          <div>Варвара Н.</div>
-          <div>13.02.22 19:22</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Мне нравится как оформлена эта страница! ❤
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">75</span>
-            <button class="like-button -active-like"></button>
-          </div>
-        </div>
-      </li>
+      //список рендерится из JS
     </ul>
     <div class="add-form">
       <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
-      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
       <div class="add-form-row">
         <button class="add-form-button">Написать</button>
         <button class="del-form-button">Удалить последний комментарий</button>
@@ -58,7 +25,7 @@
 
 <style>
   .error {
-    background-color: red;
+    background-color: rgb(168, 50, 50);
   }
 </style>
 
@@ -72,11 +39,81 @@
   const listCommentsElements = document.querySelector('.comments');
   const buttonDel = document.querySelector('.del-form-button'); //кнопка "Удалить последний комментарий"
 
+  //массив 
+  const users = [
+    {
+      name: "Глеб Фокин",
+      time: "12.02.22 12:18",
+      comment: "Это будет первый комментарий на этой странице",
+      quantityLike: 3,
+      isLike: false,
+    },
+    {
+      name: "Варвара Н.",
+      time: "13.02.22 19:22",
+      comment: "Мне нравится как оформлена эта страница! ❤",
+      quantityLike: 75,
+      isLike: false,
+    },
+  ];
+
+
+
   const date = new Date();
+
+  const renderUsers = () => {
+    const userHTML = users.map((user, index) => {
+      return `<li class="comment">
+        <div class="comment-header">
+          <div>${user.name}</div>
+          <div>${user.time}</div>
+        </div>
+        <div class="comment-body">
+          <div class="comment-text">
+            ${user.comment}
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span data-index="${index}" class="likes-counter">${user.quantityLike}</span>
+            <button data-index="${index}" class="like-button ${user.isLike ? "-active-like" : ""}"></button>
+          </div>
+        </div>
+        <button class="edit-comment-button">Редактировать</button>
+      </li>`
+    }).join(" ");
+
+    listCommentsElements.innerHTML = userHTML;
+
+    userClickLike();
+
+
+  }
+  renderUsers();
+
+
+  function userClickLike() {
+    const allButtonLikes = document.querySelectorAll(".like-button");
+    for (const buttonLike of allButtonLikes) {
+      buttonLike.addEventListener('click', () => {
+        const index = buttonLike.dataset.index;
+        if (users[index].isLike === false) {
+          console.log(allButtonLikes[index]);
+
+          users[index].quantityLike++;
+          users[index].isLike = true;
+        } else {
+          users[index].quantityLike--;
+          users[index].isLike = false;
+        }
+        renderUsers();
+      })
+    }
+  }
 
   //Добавить обработку клика кнопки "Написать"
   buttonElement.addEventListener("click", () => {
-    const oldListHTML = listCommentsElements.innerHTML;
+    renderUsers();
     nameInputElement.classList.remove("error");
     commentInputElement.classList.remove("error");
 
@@ -96,31 +133,20 @@
       return;
     }
     else {
-      listCommentsElements.innerHTML = oldListHTML +
-        `<li class="comment">
-        <div class="comment-header">
-          <div>${nameInputElement.value}</div>
-          <div>${date.getDate()}.${date.getMonth() + 1}.${date.toLocaleDateString("ru-RU", { year: '2-digit' })} ${date.getHours()}:${date.getMinutes()} </div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            ${commentInputElement.value}
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">0</span>
-            <button class="like-button"></button>
-          </div>
-        </div>
-      </li>`
-      nameInputElement.value = "";
-      commentInputElement.value = "";
+
+      users.push({
+        name: nameInputElement.value,
+        time: `${date.getDate()}.${date.getMonth() + 1}.${date.toLocaleDateString("ru-RU", { year: '2-digit' })} ${date.getHours()}:${date.getMinutes()}`,
+        comment: commentInputElement.value,
+        isLike: false,
+        quantityLike: 0,
+      })
+
+      renderUsers();
     }
 
     if (commentInputElement.value != "" & nameInputElement.value != "") {
       commentInputElement.classList.remove("error");
-      console.log("object");
       return;
     }
   });
