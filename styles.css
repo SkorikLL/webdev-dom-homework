@@ -121,7 +121,8 @@ body {
 }
 
 .add-form-button,
-.del-form-button {
+.del-form-button,
+.edit-comment-button {
   margin-top: 24px;
   font-size: 24px;
   padding: 10px 20px;
