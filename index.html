@@ -57,13 +57,11 @@
     },
   ];
 
-
-
   const date = new Date();
 
   const renderUsers = () => {
     const userHTML = users.map((user, index) => {
-      return `<li class="comment">
+      return `<li data-index="${index}" class="comment">
         <div class="comment-header">
           <div>${user.name}</div>
           <div>${user.time}</div>
@@ -84,20 +82,20 @@
 
     listCommentsElements.innerHTML = userHTML;
 
+    userClickComment()
     userClickLike();
-
 
   }
   renderUsers();
 
-
+  //Добавить обработку клика значка "Like"
   function userClickLike() {
     const allButtonLikes = document.querySelectorAll(".like-button");
     for (const buttonLike of allButtonLikes) {
-      buttonLike.addEventListener('click', () => {
+      buttonLike.addEventListener('click', (event) => {
+        event.stopPropagation();//останавливает всплытие события вверх по дереву.
         const index = buttonLike.dataset.index;
         if (users[index].isLike === false) {
-          console.log(allButtonLikes[index]);
 
           users[index].quantityLike++;
           users[index].isLike = true;
@@ -106,6 +104,19 @@
           users[index].isLike = false;
         }
         renderUsers();
+      })
+    }
+  }
+
+  //Добавить обработку клика значка "Комментарий" (Пользовать сможет ответить на комментарий)
+  function userClickComment() {
+    const allComments = document.querySelectorAll(".comment");
+    for (const comment of allComments) {
+      comment.addEventListener('click', () => {
+        const index = comment.dataset.index;
+        const textElementContent = users[index].comment;
+        console.log(textElementContent);
+        commentInputElement.value = `> ${textElementContent}\n ${users[index].name}\n`;
       })
     }
   }
@@ -132,11 +143,11 @@
       return;
     }
     else {
-
       users.push({
-        name: nameInputElement.value,
+        //.replaceAll("<", "&lt;").replaceAll(">","	&gt;") этот код нужен для защиты сайта!
+        name: nameInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
         time: `${date.getDate()}.${date.getMonth() + 1}.${date.toLocaleDateString("ru-RU", { year: '2-digit' })} ${date.getHours()}:${date.getMinutes()}`,
-        comment: commentInputElement.value,
+        comment: commentInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
         isLike: false,
         quantityLike: 0,
       })
