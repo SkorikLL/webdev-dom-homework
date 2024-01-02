@@ -13,7 +13,9 @@
     <ul class="comments">
       //список рендерится из JS
     </ul>
+    <span class="loadingTextForm"></span>
     <div class="add-form">
+
       <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
       <textarea type="textarea" class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
       <div class="add-form-row">
@@ -37,7 +39,8 @@
   const buttonElement = document.querySelector('.add-form-button'); //кнопка "Написать"
   const listCommentsElements = document.querySelector('.comments');
   const buttonDel = document.querySelector('.del-form-button'); //кнопка "Удалить последний комментарий"
-  const loadingTextElement = document.querySelector('.loadingText')
+  const loadingTextElement = document.querySelector('.loadingText');
+  const loadingTextFormElement = document.querySelector('.loadingTextForm');
 
   function fetchPromiseGetStart() {
     loadingTextElement.textContent = "Пожалуйста подождите, загружаю комментарии.....";
@@ -179,6 +182,7 @@
       //Отключаем кнопку и добавляем ей надпись "Элемент добавляется..." (нужно что бы пользователь не нажал на кнопку много раз)
       buttonElement.disabled = true;
       buttonElement.textContent = "Элемент добавляется...";
+      loadingTextFormElement.textContent = "Комментарий добавляется...";
       //Делаем запрос в сервер API метод POST
       fetch(
         "https://wedev-api.sky.pro/api/v1/:leonid-skorik/comments",
@@ -199,6 +203,7 @@
           //После обработки всех данных включаем кнопку
           buttonElement.disabled = false;
           buttonElement.textContent = "Написать";
+          loadingTextFormElement.textContent = "";
         })
       renderUsers();
     }
