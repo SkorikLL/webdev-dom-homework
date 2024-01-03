@@ -207,7 +207,7 @@
           } else if (response.status === 400) {
             throw new Error('Неверный запрос');
           } else if (response.status === 500) {
-            throw new Error('Сервер упал');
+            throw new Error('Сервер сломался, попробуй позже');
           } else {
             //Код который обработает ошибку
             //1 способ через throw new Error() 
@@ -233,10 +233,10 @@
           console.warn(error);
           if (error.message === 'Неверный запрос') {
             alert('Имя и комментарий должны быть не короче 3х символов');
-          } else if (error.message === 'Сервер упал') {
-            alert("Сервер упал");
+          } else if (error.message === 'Сервер сломался, попробуй позже') {
+            alert("Сервер сломался, попробуй позже");
           } else {
-            alert("Сервер упал");
+            alert("Кажется, у вас сломался интернет, попробуйте позже");
           }
         })
       renderUsers();
