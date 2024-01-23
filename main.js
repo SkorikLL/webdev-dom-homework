@@ -1,3 +1,3 @@
-import { fetchPromiseGetStart } from "./userPage.js";
+import { fetchPromiseGetStart } from './userPage.js'
 
-fetchPromiseGetStart();
+fetchPromiseGetStart()
